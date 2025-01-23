@@ -8,7 +8,8 @@ using UnityEngine;
 
 namespace Assets.HomeWork.Develop.GamePlay.features.DamageFeature
 {
-    public class DealDamageOnSelfTriggerBehaviour : IEntityInitialize, IEntityDispose
+    public class DealDamageOnSelfTriggerBehaviour : IEntityInitialize, IEntityDispose// нанесение урона врагу при сталкновении с колайдером врага
+                                                                                     // на котором есть компонент "Entity"
     {
         private TriggerReciever _triggerReciever;
         private ReactiveVariable<float> _damage;
@@ -25,11 +26,15 @@ namespace Assets.HomeWork.Develop.GamePlay.features.DamageFeature
 
         private void OnTriggerEnter(Collider collider)
         {
+            if (collider.TryGetComponent(out NotAcceptDamageTrigger _notAcceptDamageTrigger))
+                return;
+
             Entity otherEntity = collider.GetComponentInParent<Entity>();// проверяем есть ли у колайдера с которым столкнулись,
                                                                          // компоненты "Entity"
             if (otherEntity != null)
             {
                 Debug.Log("Нашёл врага, наношу урон!");
+
                 otherEntity.TryTakeDamage(_damage.Value);// логика урона определена в классе расширений "EntityExtensions"
             }
         }

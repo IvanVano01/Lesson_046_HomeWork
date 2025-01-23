@@ -15,7 +15,9 @@ namespace Assets.HomeWork.Develop.GamePlay.features.DamageFeature
         public void OnInit(Entity entity)
         {
             _takeDamageEvent = entity.GetTakeDamageEvent();// получаем реактивное событие
+
             _health = entity.GetHealth();
+
 
             _disposableTakeDamageEvent = _takeDamageEvent.Subcribe(OnTakeDamage);// подписываемся на реактивное событие
                                                                                  // и сохраняем ссылку на него для отписки
@@ -23,7 +25,7 @@ namespace Assets.HomeWork.Develop.GamePlay.features.DamageFeature
 
         private void OnTakeDamage(float damage) // метод реактивного события
         {
-            if(damage<0)
+            if (damage < 0)
                 throw new ArgumentOutOfRangeException(nameof(damage));
 
             float tempHealth = _health.Value - damage;// считаем здоровье

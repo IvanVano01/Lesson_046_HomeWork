@@ -1,4 +1,5 @@
 ﻿using Assets.HomeWork.Develop.GamePlay.AI.Sensors;
+using Assets.HomeWork.Develop.GamePlay.features.MovmentFeatures;
 using Assets.HomeWork.Develop.Utils.Conditions;
 using Assets.HomeWork.Develop.Utils.Reactive;
 using System;
@@ -17,8 +18,24 @@ namespace Assets.HomeWork.Develop.GamePlay.Entities.CodeGeneration
         {
             {EntityValues.MoveDirection, typeof(ReactiveVariable<Vector3>)},
             {EntityValues.MoveSpeed, typeof(ReactiveVariable<float>)},
+            
+            {EntityValues.MoveToPosition, typeof(MoveToPosition)},
             {EntityValues.MoveCondition, typeof(ICompositeCondition)},// добавляем логическое условие
-            {EntityValues.IsMoving, typeof(ReactiveVariable<bool>) }, //логич. усл. Для отображения бега
+            {EntityValues.IsMoving, typeof(ReactiveVariable<bool>) }, //логич. усл. Для отображения анимации бега
+
+            {EntityValues.TeleportationRadius, typeof(ReactiveVariable<float>)},
+            {EntityValues.TeleportationCenterArea, typeof(ReactiveVariable<Vector2>)},
+
+            {EntityValues.TeleportationEnergyMax, typeof(ReactiveVariable<float>)},
+            {EntityValues.TeleportationEnergy, typeof(ReactiveVariable<float>)},
+            {EntityValues.RegenEnergyEveryAmountSeconds, typeof(ReactiveVariable<float>)},
+            {EntityValues.TeleportationEnergyPrice, typeof(ReactiveVariable<float>)},
+
+            {EntityValues.TryToTeleportEvent, typeof(ReactiveEvent<float>)},
+            {EntityValues.GoToTeleportEvent,typeof(ReactiveEvent<Vector3>)},
+            {EntityValues.RegenTeleporEnergyCondition, typeof(ICompositeCondition)},
+            {EntityValues.TeleportationCondition, typeof(ICompositeCondition)},
+            {EntityValues.RandomGeneratorPosition, typeof(RandomGeneratorPosition)},
 
 
             {EntityValues.RotationDirection, typeof(ReactiveVariable<Vector3>)},

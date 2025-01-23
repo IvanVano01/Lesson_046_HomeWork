@@ -17,15 +17,7 @@ namespace Assets.HomeWork.Develop.GamePlay.features.MovmentFeatures
         private ICondition _condition;
 
         public void OnInit(Entity entity)
-        {
-            // запрашиваем у сущности нужные данные для реализации поведения
-
-            //------------------------запись без автогенерации кода----------------------------//
-            //_speed = entity.GetValue<ReactiveVariable<float>>(EntityValues.MoveSpeed);
-            //_direction = entity.GetValue<ReactiveVariable<Vector3>>(EntityValues.MoveDirection);
-            //_characterController = entity.GetValue<CharacterController>(EntityValues.CharacterController);
-            //-----------------------------------------------------------------------------------//
-
+        { 
             _speed = entity.GetMoveSpeed();
             _direction = entity.GetMoveDirection();
             _characterController = entity.GetCharacterController();
@@ -43,7 +35,7 @@ namespace Assets.HomeWork.Develop.GamePlay.features.MovmentFeatures
             }
 
             Vector3 velocity = _direction.Value.normalized * _speed.Value;
-            _isMoving.Value = velocity.magnitude > 0;// двигаемся если длина вектора скорости больше ноля
+            _isMoving.Value = velocity.magnitude > 0;// двигаемся если длина вектора скорости больше ноля(для запуска анимации)
 
             _characterController.Move(velocity * deltaTime);
         }

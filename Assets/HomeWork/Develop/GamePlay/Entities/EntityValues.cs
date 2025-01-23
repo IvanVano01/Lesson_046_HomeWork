@@ -4,8 +4,24 @@
     {
         MoveDirection,
         MoveSpeed,
+       
+        MoveToPosition,
         MoveCondition,
         IsMoving,
+
+        TeleportationRadius,
+        TeleportationCenterArea,
+
+        TeleportationEnergyMax,
+        TeleportationEnergy,
+        RegenEnergyEveryAmountSeconds,
+        TeleportationEnergyPrice,
+
+        TryToTeleportEvent,
+        GoToTeleportEvent,
+        TeleportationCondition,
+        RegenTeleporEnergyCondition,
+        RandomGeneratorPosition,
 
         RotationDirection,
         RotationSpeed,
@@ -28,6 +44,5 @@
         IsDeathProcess,
         DeathCondition,
         SelfDestroyCondition,
-
     }
 }

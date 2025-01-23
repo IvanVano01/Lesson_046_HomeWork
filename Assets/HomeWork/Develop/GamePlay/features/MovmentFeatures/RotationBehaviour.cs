@@ -22,13 +22,7 @@ namespace Assets.HomeWork.Develop.GamePlay.features.MovmentFeatures
 
         public void OnInit(Entity entity)
         {
-            // запрашиваем у сущности нужные данные для реализации поведения
-
-            //------------------------запись без автогенерации кода----------------------------//
-            //_rotationSpeed = entity.GetValue<ReactiveVariable<float>>(EntityValues.RotationSpeed);
-            //_direction = entity.GetValue<ReactiveVariable<Vector3>>(EntityValues.RotationDirection);
-            //_transform = entity.GetValue<Transform>(EntityValues.Transform);
-            //-----------------------------------------------------------------------------------//
+            // запрашиваем у сущности нужные данные для реализации поведения           
 
             _rotationSpeed = entity.GetRotationSpeed();
             _direction = entity.GetRotationDirection();
