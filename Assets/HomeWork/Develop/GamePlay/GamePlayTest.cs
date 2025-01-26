@@ -1,6 +1,7 @@
 ﻿using Assets.HomeWork.Develop.CommonServices.DI;
 using Assets.HomeWork.Develop.GamePlay.Entities;
 using Assets.HomeWork.Develop.GamePlay.features.MovmentFeatures;
+using Assets.HomeWork.Develop.Utils.Conditions;
 using Assets.HomeWork.Develop.Utils.Extensions;
 using Assets.HomeWork.Develop.Utils.Reactive;
 using UnityEngine;
@@ -8,11 +9,12 @@ using UnityEngine;
 namespace Assets.HomeWork.Develop.GamePlay
 {
     public class GamePlayTest : MonoBehaviour // временный класс, для теста в процессе разработки геймплэя
-    { 
+    {
         private DIContainer _container;
 
         private Entity _ghost;
         private Entity _soulMage;
+        private ICondition _conditionTeleportationForEnergy;
 
         public void StartProcess(DIContainer container)
         {
@@ -25,6 +27,7 @@ namespace Assets.HomeWork.Develop.GamePlay
             _container.Resolve<EntityFactory>().CreateGhost(Vector3.zero + Vector3.right * 4);//спавним ещё сущность, для теста
 
             _soulMage = _container.Resolve<EntityFactory>().CreateSoulMage(Vector3.zero);
+            _conditionTeleportationForEnergy = _soulMage.GetTeleportationForEnergyCondition();
         }
 
         private void Update()
@@ -44,14 +47,16 @@ namespace Assets.HomeWork.Develop.GamePlay
             //}
 
             if (_soulMage != null)
-            {  
+            {
                 if (Input.GetKeyDown(KeyCode.F) && _soulMage.TryGetTakeDamageRequest(out var takeDamageRequest))
                 {
                     takeDamageRequest.Invoke(100);
                     Debug.Log($"Осталось здоровья: " + _soulMage.GetHealth().Value);
                 }
 
-                if (Input.GetKeyDown(KeyCode.T) && _soulMage.TryGetTryToTeleportEvent(out var tryToTeleportEvent))
+                if (Input.GetKeyDown(KeyCode.T) && 
+                    _soulMage.TryGetTryToTeleportEvent(out var tryToTeleportEvent) && 
+                    _conditionTeleportationForEnergy.Evaluate())
                 {
                     tryToTeleportEvent.Invoke(_soulMage.GetTeleportationEnergyPrice().Value);
 

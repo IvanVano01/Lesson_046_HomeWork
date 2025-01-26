@@ -18,7 +18,7 @@ namespace Assets.HomeWork.Develop.GamePlay.Entities.CodeGeneration
         {
             {EntityValues.MoveDirection, typeof(ReactiveVariable<Vector3>)},
             {EntityValues.MoveSpeed, typeof(ReactiveVariable<float>)},
-            
+
             {EntityValues.MoveToPosition, typeof(MoveToPosition)},
             {EntityValues.MoveCondition, typeof(ICompositeCondition)},// добавляем логическое условие
             {EntityValues.IsMoving, typeof(ReactiveVariable<bool>) }, //логич. усл. Для отображения анимации бега
@@ -35,6 +35,7 @@ namespace Assets.HomeWork.Develop.GamePlay.Entities.CodeGeneration
             {EntityValues.GoToTeleportEvent,typeof(ReactiveEvent<Vector3>)},
             {EntityValues.RegenTeleporEnergyCondition, typeof(ICompositeCondition)},
             {EntityValues.TeleportationCondition, typeof(ICompositeCondition)},
+            {EntityValues.TeleportationForEnergyCondition, typeof(ICompositeCondition)},
             {EntityValues.RandomGeneratorPosition, typeof(RandomGeneratorPosition)},
 
 
@@ -44,10 +45,12 @@ namespace Assets.HomeWork.Develop.GamePlay.Entities.CodeGeneration
 
             {EntityValues.SelfTriggerDamage, typeof(ReactiveVariable<float>)},
             {EntityValues.SelfTriggerReciever, typeof(TriggerReciever)},
+            {EntityValues.TeleportationDamage, typeof(ReactiveVariable<float>)},
+            {EntityValues.TeleportationDamageRadius, typeof(ReactiveVariable<float>)},
 
             {EntityValues.CharacterController, typeof(CharacterController)},
             {EntityValues.Transform, typeof(Transform)},
-            
+
             {EntityValues.Health,typeof(ReactiveVariable<float>)},
             {EntityValues.MaxHealth,typeof(ReactiveVariable<float>)},
 
@@ -80,14 +83,14 @@ namespace Assets.HomeWork.Develop.GamePlay.Entities.CodeGeneration
                 if (entityValuesToTypePair.Value.IsGenericType)// для правильного разпознавания "ReactiveVariable<float>"
                 {
                     type = type.Substring(0, type.IndexOf('`'));// выпиливаем "<>" от "ReactiveVariable"
-                    
+
                     type += "<";
 
-                    for(int i = 0; i< entityValuesToTypePair.Value.GenericTypeArguments.Length; i++)// проходимся по аргументам которые в "<>" и берём имя аргумента
+                    for (int i = 0; i < entityValuesToTypePair.Value.GenericTypeArguments.Length; i++)// проходимся по аргументам которые в "<>" и берём имя аргумента
                     {
                         type += entityValuesToTypePair.Value.GenericTypeArguments[i].FullName;
-                        
-                        if(i != entityValuesToTypePair.Value.GenericTypeArguments.Length -1) // для запятой "," если аргументов несколько
+
+                        if (i != entityValuesToTypePair.Value.GenericTypeArguments.Length - 1) // для запятой "," если аргументов несколько
                             type += ",";
                     }
 
@@ -119,6 +122,6 @@ namespace Assets.HomeWork.Develop.GamePlay.Entities.CodeGeneration
             type.IsAbstract == false
             && type.IsSubclassOf(typeof(UnityEngine.Object)) == false
             && type.IsInterface == false
-            && type.GetConstructors().Any(constructor =>  constructor.GetParameters().Count() == 0);        
+            && type.GetConstructors().Any(constructor => constructor.GetParameters().Count() == 0);
     }
 }

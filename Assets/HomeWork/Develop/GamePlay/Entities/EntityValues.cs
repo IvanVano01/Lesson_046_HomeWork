@@ -20,6 +20,7 @@
         TryToTeleportEvent,
         GoToTeleportEvent,
         TeleportationCondition,
+        TeleportationForEnergyCondition,
         RegenTeleporEnergyCondition,
         RandomGeneratorPosition,
 
@@ -29,6 +30,8 @@
 
         SelfTriggerReciever,
         SelfTriggerDamage,
+        TeleportationDamage,
+        TeleportationDamageRadius,
 
         CharacterController,
         Transform,

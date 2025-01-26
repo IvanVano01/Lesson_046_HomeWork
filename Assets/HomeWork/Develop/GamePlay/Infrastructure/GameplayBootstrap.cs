@@ -1,4 +1,5 @@
-﻿using Assets.HomeWork.Develop.CommonServices.DI;
+﻿using Assets.HomeWork.Develop.CommonServices.CoroutinePerformer;
+using Assets.HomeWork.Develop.CommonServices.DI;
 using Assets.HomeWork.Develop.CommonServices.SceneManagment;
 using Assets.HomeWork.Develop.GamePlay.Entities;
 using System.Collections;
@@ -10,6 +11,7 @@ namespace Assets.HomeWork.Develop.GamePlay.Infrastructure
     {
         private DIContainer _container;
         private GameplayInputArgs _gameplayInputArgs;
+        private ICoroutinePerformer _coroutinePerformer;
 
         [SerializeField] private GamePlayTest _gameplayTest;// временно для тестирования
        
@@ -25,16 +27,14 @@ namespace Assets.HomeWork.Develop.GamePlay.Infrastructure
             Debug.Log("Сцена готова, можно начинать игру! ");
 
             _gameplayTest.StartProcess(_container);
-            yield return new WaitForSeconds(1f);// симулируем ожидание        
-
-           
+            yield return new WaitForSeconds(1f);// симулируем ожидание 
         }
 
         private void ProcessRegistrations()
         {
             // регаем всё что нужно для этой сцены
- 
-            _container.RegisterAsSingle(c => new EntityFactory(c)); 
+            _coroutinePerformer = _container.Resolve<ICoroutinePerformer>();            
+            _container.RegisterAsSingle(c => new EntityFactory(c, _coroutinePerformer)); 
 
             _container.Initialize();// для создания объектов "NonLazy"
         }        

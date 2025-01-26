@@ -1,4 +1,5 @@
 ﻿using Assets.HomeWork.Develop.CommonServices.AssetManagment;
+using Assets.HomeWork.Develop.CommonServices.CoroutinePerformer;
 using Assets.HomeWork.Develop.CommonServices.DI;
 using Assets.HomeWork.Develop.GamePlay.features.DamageFeature;
 using Assets.HomeWork.Develop.GamePlay.features.Deathfeature;
@@ -17,11 +18,13 @@ namespace Assets.HomeWork.Develop.GamePlay.Entities
 
         private DIContainer _container;
         private ResourcesAssetLoader _assets;
+       private ICoroutinePerformer _coroutinePerformer;
 
-        public EntityFactory(DIContainer container)
+        public EntityFactory(DIContainer container, ICoroutinePerformer coroutinePerformer)
         {
             _container = container;
             _assets = _container.Resolve<ResourcesAssetLoader>();
+            _coroutinePerformer = coroutinePerformer;            
         }
 
         public Entity CreateGhost(Vector3 position)// метод создания сущности призрака"Ghost"
@@ -99,7 +102,7 @@ namespace Assets.HomeWork.Develop.GamePlay.Entities
 
             // наполняем сущность данными
             instance
-            
+
             .AddRotationDirection()
             .AddMoveToPosition(new MoveToPosition())
             .AddIsMoving()
@@ -123,8 +126,9 @@ namespace Assets.HomeWork.Develop.GamePlay.Entities
             .AddTakeDamageEvent()
             .AddIsDead()
             .AddIsDeathProcess()
-            .AddSelfTriggerDamage(new ReactiveVariable<float>(200));
-
+            .AddSelfTriggerDamage(new ReactiveVariable<float>(200))
+            .AddTeleportationDamage(new ReactiveVariable<float>(150))
+            .AddTeleportationDamageRadius(new ReactiveVariable<float>(2.5f));
 
 
 
@@ -138,9 +142,11 @@ namespace Assets.HomeWork.Develop.GamePlay.Entities
             ICompositeCondition moveCondition = new CompositeCondition(LogicOperations.AndOperation)
                 .Add(new FuncCondition(() => instance.GetIsDead().Value == false));// если мы не мёртвые, значит можем двигаться
 
-            ICompositeCondition teleportationCondition = new CompositeCondition(LogicOperations.AndOperation)
-                .Add(new FuncCondition(() => instance.GetTeleportationEnergy().Value >= instance.GetTeleportationEnergyPrice().Value)) // пока есть енергия, можем телепортироваться
+            ICompositeCondition teleportationCondition = new CompositeCondition(LogicOperations.AndOperation)                
                 .Add(new FuncCondition(() => instance.GetIsDead().Value == false)); // пока живы, можем телепортироваться
+
+            ICompositeCondition teleportationForEnergyCondition = new CompositeCondition(LogicOperations.AndOperation)
+                .Add(new FuncCondition(() => instance.GetTeleportationEnergy().Value >= instance.GetTeleportationEnergyPrice().Value)); // пока есть енергия, можем телепортироваться
 
             ICompositeCondition regenTeleporEnergyCondition = new CompositeCondition(LogicOperations.AndOperation)
                 .Add(new FuncCondition(() => instance.GetTeleportationEnergy().Value < instance.GetTeleportationEnergyMax().Value));
@@ -159,6 +165,7 @@ namespace Assets.HomeWork.Develop.GamePlay.Entities
             .AddMoveCondition(moveCondition)
             .AddRotationCondition(rotationCondition)
             .AddTeleportationCondition(teleportationCondition)
+            .AddTeleportationForEnergyCondition(teleportationForEnergyCondition)
             .AddRegenTeleporEnergyCondition(regenTeleporEnergyCondition)
             .AddDeathCondition(deathCondition)
             .AddTakeDamageCondition(takeDamageCondition)
@@ -167,11 +174,12 @@ namespace Assets.HomeWork.Develop.GamePlay.Entities
             // добавляем к сущности состояния
             instance
             .AddBehaviour(new RotationBehaviour())
-            .AddBehaviour(new TeleportatoinBehaviour())
+            .AddBehaviour(new TeleportatoinBehaviour(_coroutinePerformer))
             .AddBehaviour(new EnergyTeleportRegenerationBehaviour())
             .AddBehaviour(new ApplyDamageFillterBehaviour())
             .AddBehaviour(new ApplyDamageBehaviour())
             .AddBehaviour(new DealDamageOnSelfTriggerBehaviour())
+            .AddBehaviour(new DealDamageAfterTeleportationBehaviour())
             .AddBehaviour(new DeathBevaviour())
             .AddBehaviour(new SelfDestroyBehaviour());
 

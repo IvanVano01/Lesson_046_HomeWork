@@ -16,8 +16,8 @@ namespace Assets.HomeWork.Develop.GamePlay.AI.Sensors
         public IReadOnlyEvent<Collider> Enter => _enter;//св-во для подписки на событие
         public IReadOnlyEvent<Collider> Exit => _exit;
         public IReadOnlyEvent<Collider> Stay => _stay;
-
-        private Collider _collider;// для теста визуальных границ колайдера
+       
+        public IReadOnlyList<Collider > IgnoreColliders => _ignoreColliders;
 
         private void Awake()
         {
@@ -27,8 +27,6 @@ namespace Assets.HomeWork.Develop.GamePlay.AI.Sensors
             {
                 Physics.IgnoreCollision(selfCollider, collider);// что бы объект не детектил свои колайдеры 
             }
-            
-            _collider = selfCollider;// для теста визуальных границ колайдера
         }
 
         private void OnTriggerEnter(Collider other)
@@ -44,12 +42,6 @@ namespace Assets.HomeWork.Develop.GamePlay.AI.Sensors
         private void OnTriggerStay(Collider other)
         {
             _stay.Invoke(other);
-        }
-
-        private void OnDrawGizmos()// для теста визуальных границ колайдера
-        {
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere (_collider.transform.position, _collider.bounds.size.y/2);
-        }
+        }        
     }
 }

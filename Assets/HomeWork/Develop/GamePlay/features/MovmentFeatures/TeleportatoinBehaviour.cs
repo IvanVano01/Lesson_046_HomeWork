@@ -1,4 +1,5 @@
-﻿using Assets.HomeWork.Develop.GamePlay.Entities;
+﻿using Assets.HomeWork.Develop.CommonServices.CoroutinePerformer;
+using Assets.HomeWork.Develop.GamePlay.Entities;
 using Assets.HomeWork.Develop.GamePlay.Entities.Behaviours;
 using Assets.HomeWork.Develop.Utils.Conditions;
 using Assets.HomeWork.Develop.Utils.Reactive;
@@ -14,6 +15,7 @@ namespace Assets.HomeWork.Develop.GamePlay.features.MovmentFeatures
         private ReactiveEvent<Vector3> _goToTeleportEvent;
 
         private Transform _transform;
+        private ICoroutinePerformer _coroutinePerformer;
         private Vector3 _oldPosition;
         private Vector3 _randomPosition;
         private MoveToPosition _moveToPosition;
@@ -29,6 +31,11 @@ namespace Assets.HomeWork.Develop.GamePlay.features.MovmentFeatures
         private IDisposable _disposableTryToTeleportEvent;
 
         private Coroutine _delayCoroutine;
+
+        public TeleportatoinBehaviour(ICoroutinePerformer coroutinePerformer)
+        {
+            _coroutinePerformer = coroutinePerformer;
+        }
 
         public void OnInit(Entity entity)
         {
@@ -53,10 +60,13 @@ namespace Assets.HomeWork.Develop.GamePlay.features.MovmentFeatures
             _disposableTryToTeleportEvent.Dispose();
         }
 
-        private void OnTakeTeleportation(float teleportationEnergy)
+        private void OnTakeTeleportation(float teleportationEnergy = default)
         {
-            if (teleportationEnergy < 0)
-                throw new ArgumentOutOfRangeException(nameof(teleportationEnergy));
+            if (teleportationEnergy != default)
+            {
+                if (teleportationEnergy < 0)
+                    throw new ArgumentOutOfRangeException(nameof(teleportationEnergy));
+            }
 
             if (_condition.Evaluate() == false)
                 return;
@@ -68,7 +78,7 @@ namespace Assets.HomeWork.Develop.GamePlay.features.MovmentFeatures
 
             _randomPosition = ToGenerateRandomPosition();
 
-            _delayCoroutine = _transform.GetComponent<MonoBehaviour>().StartCoroutine(TimeDelay());
+            _delayCoroutine = _coroutinePerformer.StartPerform(TimeDelay()); //StartCoroutine(TimeDelay());
         }
 
         private IEnumerator TimeDelay()
@@ -79,11 +89,11 @@ namespace Assets.HomeWork.Develop.GamePlay.features.MovmentFeatures
             yield return new WaitForSeconds(0.5f);
 
             ToTeleportation(_transform, _randomPosition);
-            _goToTeleportEvent.Invoke(_oldPosition);
+            _goToTeleportEvent?.Invoke(_oldPosition);
         }
 
         private void ToTeleportation(Transform transformObj, Vector3 position)
-        {           
+        {
             _moveToPosition.MoveTo(transformObj, position);
         }
 

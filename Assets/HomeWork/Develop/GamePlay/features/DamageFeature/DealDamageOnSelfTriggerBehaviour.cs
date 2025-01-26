@@ -25,15 +25,13 @@ namespace Assets.HomeWork.Develop.GamePlay.features.DamageFeature
         }
 
         private void OnTriggerEnter(Collider collider)
-        {
-            if (collider.TryGetComponent(out NotAcceptDamageTrigger _notAcceptDamageTrigger))
-                return;
+        {           
 
             Entity otherEntity = collider.GetComponentInParent<Entity>();// проверяем есть ли у колайдера с которым столкнулись,
                                                                          // компоненты "Entity"
             if (otherEntity != null)
             {
-                Debug.Log("Нашёл врага, наношу урон!");
+                Debug.Log($"Нашёл врага, наношу урон!{otherEntity.name}");
 
                 otherEntity.TryTakeDamage(_damage.Value);// логика урона определена в классе расширений "EntityExtensions"
             }
